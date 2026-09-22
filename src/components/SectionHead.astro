@@ -1,0 +1,16 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  eyebrow?: string;
+  lead?: string;
+  align?: 'left' | 'center';
+}
+const { id, title, eyebrow, lead, align = 'left' } = Astro.props;
+---
+
+<div class:list={['section-head', { 'section-head--center': align === 'center' }]}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <h2 id={id}>{title}</h2>
+  {lead && <p class="lead">{lead}</p>}
+</div>

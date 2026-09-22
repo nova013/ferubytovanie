@@ -1,0 +1,23 @@
+{
+  "name": "fer-byvanie",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Webová stránka ubytovania Fér Bývanie – Polianky 15, Bratislava – Dúbravka",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "photos:convert": "node scripts/convert-photos.mjs",
+    "photos:verify": "node scripts/verify-photos.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/manrope": "^5.3.0",
+    "astro": "^7.3.3",
+    "sharp": "^0.35.4",
+    "@astrojs/compiler-binding-wasm32-wasi": "file:vendor/astro-compiler-wasm32-wasi"
+  },
+  "devDependencies": {
+    "heic-convert": "^2.1.0"
+  }
+}

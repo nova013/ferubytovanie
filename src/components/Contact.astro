@@ -1,0 +1,153 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+
+<section class="section section--dark contact" id="kontakt" aria-labelledby="kontakt-nadpis">
+  <div class="container">
+    <div class="contact__head">
+      <p class="eyebrow">Kontakt</p>
+      <h2 id="kontakt-nadpis">Máte záujem o ubytovanie?</h2>
+      <p class="lead">
+        Zavolajte nám. Povieme vám, či máme voľné lôžka, a odpovieme na všetky otázky.
+      </p>
+      <a class="btn btn--primary btn--lg contact__cta" href={site.phoneHref}>
+        <Icon name="phone" size={22} />
+        <span>Zavolať {site.phoneDisplay}</span>
+      </a>
+    </div>
+
+    <ul class="contact__cards">
+      <li class="contact__card contact__card--primary">
+        <span class="contact__icon"><Icon name="phone" size={22} /></span>
+        <span class="contact__label">Telefón</span>
+        <a class="contact__value" href={site.phoneHref}>{site.phoneDisplay}</a>
+        <span class="contact__hint">Najrýchlejší spôsob, ako si overiť dostupnosť.</span>
+      </li>
+      <li class="contact__card">
+        <span class="contact__icon"><Icon name="mail" size={22} /></span>
+        <span class="contact__label">E‑mail</span>
+        <a class="contact__value contact__value--small" href={site.emailHref}>{site.email}</a>
+        <span class="contact__hint">Pre otázky, ktoré neponáhľajú.</span>
+      </li>
+      <li class="contact__card">
+        <span class="contact__icon"><Icon name="map-pin" size={22} /></span>
+        <span class="contact__label">Adresa</span>
+        <address class="contact__value contact__value--small">
+          {site.address.street}<br />
+          {site.address.postalCode} {site.address.city} – {site.address.district}
+        </address>
+        <a
+          class="contact__link"
+          href={site.maps.directionsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Zobraziť trasu
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contact__head {
+    max-width: 44rem;
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .contact__cta {
+    margin-top: 1.75rem;
+  }
+
+  .contact__cards {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .contact__card {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    background: var(--color-dark-2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .contact__card--primary {
+    border-color: rgba(143, 208, 178, 0.45);
+    background: linear-gradient(160deg, rgba(31, 107, 78, 0.35), rgba(31, 107, 78, 0.08)),
+      var(--color-dark-2);
+  }
+
+  .contact__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-accent-on-dark);
+  }
+
+  .contact__label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-on-dark-muted);
+  }
+
+  .contact__value {
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: #fff;
+    text-decoration: none;
+    font-style: normal;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .contact__value--small {
+    font-size: 1.1rem;
+  }
+
+  a.contact__value:hover {
+    text-decoration: underline;
+  }
+
+  .contact__hint {
+    font-size: 0.92rem;
+    color: var(--color-on-dark-muted);
+  }
+
+  .contact__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.25rem;
+    font-weight: 700;
+    color: var(--color-accent-on-dark);
+    text-decoration: none;
+  }
+
+  .contact__link:hover {
+    text-decoration: underline;
+  }
+
+  @media (min-width: 720px) {
+    .contact__cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 900px) {
+    .contact__card {
+      padding: 1.75rem;
+    }
+  }
+</style>

@@ -1,0 +1,11 @@
+# Závislosti a build
+node_modules/
+dist/
+.astro/
+
+# Logy a lokálne súbory
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.env
+.env.*

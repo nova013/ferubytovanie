@@ -1,0 +1,279 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { photo } from '../data/photos';
+
+const hero = photo('main-building');
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__media">
+    <Picture
+      src={hero.src}
+      alt={hero.alt}
+      formats={['avif', 'webp']}
+      widths={[480, 640, 828, 1080, 1440, 2176]}
+      width={2176}
+      sizes="(min-width: 1200px) 62vw, 100vw"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      class="hero__img"
+    />
+  </div>
+
+  <div class="hero__content">
+    <p class="hero__eyebrow">
+      <Icon name="map-pin" size={16} />
+      <span>Polianky 15, Bratislava – Dúbravka</span>
+    </p>
+    <h1 id="hero-title">Férové ubytovanie v&nbsp;Bratislave</h1>
+    <p class="hero__lead">
+      Jednoduché a cenovo dostupné ubytovanie v Dúbravke. Izby s 2 – 3 lôžkami, spoločné kuchyne
+      a kúpeľne, Wi‑Fi, práčky a parkovanie v cene.
+    </p>
+
+    <div class="hero__price" role="group" aria-label="Cena ubytovania">
+      <span class="hero__price-value">
+        <span class="hero__price-from">od</span>
+        {site.price.display}
+      </span>
+      <span class="hero__price-text">
+        <strong>{site.price.unit}</strong>
+        <span>Wi‑Fi, práčky a parkovanie v cene</span>
+      </span>
+    </div>
+
+    <div class="hero__actions">
+      <a class="btn btn--primary btn--lg" href={site.phoneHref}>
+        <Icon name="phone" size={20} />
+        <span>Zavolať {site.phoneDisplay}</span>
+      </a>
+      <a class="btn btn--outline-dark btn--lg" href="#fotogaleria">
+        <Icon name="images" size={20} />
+        <span>Pozrieť fotografie</span>
+      </a>
+    </div>
+    <p class="hero__note">Dostupnosť lôžok vám overíme telefonicky.</p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    --hero-text-w: 31rem;
+    position: relative;
+    background: var(--color-dark);
+    color: var(--color-on-dark);
+  }
+
+  /* Fotografia budovy ----------------------------------------------------- */
+  .hero__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    max-height: 62vh;
+    overflow: hidden;
+    background: var(--color-dark-2);
+  }
+
+  .hero__media :global(picture),
+  .hero__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Budova je mierne vpravo od stredu fotografie – orez ju drží celú v zábere. */
+    object-position: 62% 70%;
+  }
+
+  /* Text ------------------------------------------------------------------ */
+  .hero__content {
+    width: 100%;
+    max-width: calc(var(--container) + 2 * var(--gutter));
+    margin-inline: auto;
+    padding: 1.75rem var(--gutter) 2.5rem;
+  }
+
+  .hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0 0 1rem;
+    padding: 0.35rem 0.8rem 0.35rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-on-dark);
+  }
+
+  .hero__eyebrow :global(svg) {
+    color: var(--color-accent-on-dark);
+  }
+
+  .hero h1 {
+    color: #fff;
+  }
+
+  .hero__lead {
+    max-width: 34rem;
+    margin-top: 1rem;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.2rem);
+    line-height: 1.55;
+    color: var(--color-on-dark-muted);
+  }
+
+  /* Cena */
+  .hero__price {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 0.9rem 1.25rem 0.9rem 1.1rem;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: var(--shadow-md);
+  }
+
+  .hero__price-value {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    flex: none;
+    font-size: clamp(2.25rem, 1.9rem + 1.4vw, 2.9rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--color-accent-text);
+  }
+
+  .hero__price-from {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--color-text-muted);
+  }
+
+  .hero__price-text {
+    display: grid;
+    gap: 0.1rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--color-border);
+    font-size: 0.9rem;
+    line-height: 1.35;
+    color: var(--color-text-muted);
+  }
+
+  .hero__price-text strong {
+    font-size: 1.02rem;
+    color: var(--color-text);
+  }
+
+  /* Tlačidlá */
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .hero__actions .btn {
+    flex: 1 1 auto;
+  }
+
+  .hero__note {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    color: var(--color-on-dark-muted);
+  }
+
+  @media (min-width: 600px) {
+    .hero__actions .btn {
+      flex: 0 1 auto;
+    }
+
+    .hero__price {
+      display: inline-flex;
+    }
+  }
+
+  /* Tablet – fotografia v prirodzenom pomere strán, bez orezania */
+  @media (min-width: 700px) {
+    .hero__media {
+      aspect-ratio: 16 / 9;
+      max-height: 72vh;
+    }
+
+    .hero__content {
+      padding-block: 2.25rem 3rem;
+    }
+  }
+
+  /* Desktop – text vľavo na tmavom paneli, budova vpravo celá v zábere */
+  @media (min-width: 1200px) {
+    .hero {
+      --hero-left: max(var(--gutter), calc((100vw - var(--container)) / 2));
+      display: flex;
+      align-items: center;
+      min-height: clamp(600px, calc(100svh - var(--header-h) - 72px), 780px);
+    }
+
+    .hero__media {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: calc(var(--hero-left) + var(--hero-text-w) + 3rem);
+      aspect-ratio: auto;
+      max-height: none;
+    }
+
+    .hero__media :global(img) {
+      object-position: 57% 70%;
+    }
+
+    /* Plynulý prechod z tmavého panelu do fotografie */
+    .hero__media::after {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 7%;
+      background: linear-gradient(to right, var(--color-dark), rgba(35, 38, 43, 0));
+      pointer-events: none;
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      max-width: none;
+      margin: 0;
+      padding: 3.5rem 0 3.5rem var(--hero-left);
+      width: calc(var(--hero-left) + var(--hero-text-w));
+    }
+
+    .hero h1 {
+      font-size: 3.1rem;
+    }
+
+    /* V úzkom stĺpci pôsobia cena a tlačidlá ako jednotný blok */
+    .hero__price {
+      display: flex;
+    }
+
+    .hero__actions {
+      display: grid;
+    }
+  }
+
+  @media (min-width: 1600px) {
+    .hero {
+      --hero-text-w: 34rem;
+    }
+
+    .hero h1 {
+      font-size: 3.4rem;
+    }
+  }
+</style>

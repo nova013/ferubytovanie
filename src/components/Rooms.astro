@@ -1,0 +1,211 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+import { site } from '../data/site';
+import { photo } from '../data/photos';
+
+const rooms = [
+  { photo: photo('three-room'), title: 'Trojlôžková izba', note: '3 samostatné lôžka', wide: true },
+  { photo: photo('two-room-1'), title: 'Dvojlôžková izba', note: '2 samostatné lôžka', wide: false },
+  { photo: photo('two-room'), title: 'Dvojlôžková izba', note: '2 samostatné lôžka', wide: false },
+];
+
+const facts = [
+  { icon: 'door', value: `${site.facts.rooms} izieb` },
+  { icon: 'bed', value: `${site.facts.bedsPerRoom} lôžka v izbe` },
+  { icon: 'users', value: `cca ${site.facts.beds} lôžok spolu` },
+] as const;
+---
+
+<section class="section section--alt rooms" id="izby" aria-labelledby="izby-nadpis">
+  <div class="container">
+    <div class="rooms__head">
+      <SectionHead
+        id="izby-nadpis"
+        eyebrow="Izby"
+        title="50 izieb s dvoma alebo tromi lôžkami"
+        lead="Každá izba má samostatné lôžka pre dvoch alebo troch ľudí. V celej budove je približne 100 lôžok. Fotografie zobrazujú skutočné izby."
+      />
+      <ul class="rooms__facts" aria-label="Základné údaje o izbách">
+        {
+          facts.map((fact) => (
+            <li>
+              <Icon name={fact.icon} size={20} />
+              <span>{fact.value}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="rooms__grid">
+      {
+        rooms.map((room) => (
+          <figure class:list={['img-frame', 'rooms__card', { 'rooms__card--wide': room.wide }]}>
+            <Picture
+              src={room.photo.src}
+              alt={room.photo.alt}
+              formats={['avif', 'webp']}
+              widths={room.wide ? [640, 960, 1400] : [420, 640, 900]}
+              width={room.wide ? 1400 : 900}
+              sizes={
+                room.wide
+                  ? '(min-width: 1200px) 600px, (min-width: 900px) 50vw, 100vw'
+                  : '(min-width: 1200px) 300px, (min-width: 900px) 25vw, 50vw'
+              }
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption class="rooms__caption">
+              <strong>{room.title}</strong>
+              <span>{room.note}</span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <p class="rooms__price">
+      <Icon name="euro" size={18} />
+      <span>
+        Cena za každé lôžko je rovnaká: <strong>{site.price.display} za noc</strong>.
+        <a href={site.phoneHref}>Zavolajte a overte si dostupnosť.</a>
+      </span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .rooms__head {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .rooms__head :global(.section-head) {
+    margin-bottom: 0;
+  }
+
+  .rooms__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .rooms__facts li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-bg);
+    font-weight: 700;
+    font-size: 0.92rem;
+  }
+
+  .rooms__facts svg {
+    color: var(--color-accent-text);
+  }
+
+  .rooms__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .rooms__card {
+    margin: 0;
+    aspect-ratio: 3 / 4;
+  }
+
+  .rooms__card--wide {
+    grid-column: 1 / -1;
+    aspect-ratio: 4 / 3;
+  }
+
+  .rooms__caption {
+    position: absolute;
+    left: 0.85rem;
+    bottom: 0.85rem;
+    display: grid;
+    gap: 0.05rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--color-text);
+    box-shadow: var(--shadow-sm);
+    font-size: 0.85rem;
+    line-height: 1.3;
+  }
+
+  .rooms__caption strong {
+    font-weight: 800;
+  }
+
+  .rooms__caption span {
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+
+  .rooms__price {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+    padding: 1rem 1.15rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-accent-soft);
+    color: var(--color-accent-text);
+    font-size: 0.98rem;
+  }
+
+  .rooms__price svg {
+    flex: none;
+    margin-top: 0.2rem;
+  }
+
+  .rooms__price a {
+    font-weight: 700;
+  }
+
+  @media (min-width: 700px) {
+    .rooms__grid {
+      gap: 1.1rem;
+    }
+
+    .rooms__card--wide {
+      aspect-ratio: 16 / 10;
+    }
+  }
+
+  /* Desktop: trojlôžková izba na šírku + dve dvojlôžkové izby v jednom rade */
+  @media (min-width: 900px) {
+    .rooms__grid {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+      grid-auto-rows: clamp(340px, 34vw, 480px);
+    }
+
+    .rooms__card,
+    .rooms__card--wide {
+      grid-column: auto;
+      aspect-ratio: auto;
+      height: 100%;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .rooms__head {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 2rem;
+    }
+
+    .rooms__facts {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-bottom: 0.25rem;
+    }
+  }
+</style>

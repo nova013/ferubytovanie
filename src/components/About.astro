@@ -1,0 +1,175 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+import { site } from '../data/site';
+import { photo } from '../data/photos';
+
+const hallway = photo('hallway');
+const entrance = photo('main-building-3');
+
+const points = [
+  '50 izieb, v každej 2 – 3 lôžka',
+  '3 spoločné kuchyne a 3 spoločné kúpeľne',
+  'Wi‑Fi, práčky a parkovanie v cene',
+  'Objekt monitorovaný kamerovým systémom',
+  'Domáce zvieratá nie sú povolené',
+];
+---
+
+<section class="section about" id="ubytovanie" aria-labelledby="ubytovanie-nadpis">
+  <div class="container about__layout">
+    <div class="about__text">
+      <SectionHead
+        id="ubytovanie-nadpis"
+        eyebrow="O ubytovaní"
+        title="Jednoduché ubytovanie za férovú cenu"
+      />
+      <p>
+        Fér Bývanie je praktické ubytovanie v Bratislave – Dúbravke pre každého, kto potrebuje
+        slušné miesto na prespanie za rozumnú cenu. Bez zbytočností, ale so všetkým, čo k bežnému
+        bývaniu potrebujete.
+      </p>
+      <p>
+        V budove je {site.facts.rooms} izieb s dvoma alebo tromi lôžkami, spolu pre približne
+        {site.facts.beds} ubytovaných. Na každom ubytovacom podlaží je spoločná kuchyňa a spoločná
+        kúpeľňa. Wi‑Fi, práčky aj parkovanie pri budove máte v cene.
+      </p>
+      <p>
+        Objekt je monitorovaný kamerovým systémom. Cena je jednoduchá: {site.price.display} za noc
+        a lôžko.
+      </p>
+
+      <ul class="check-list about__list">
+        {
+          points.map((point) => (
+            <li>
+              <span class="check-list__icon">
+                <Icon name="check" size={14} stroke={3} />
+              </span>
+              <span>{point}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="about__actions">
+        <a class="btn btn--primary" href={site.phoneHref}>
+          <Icon name="phone" size={18} />
+          <span>Zavolajte nám</span>
+        </a>
+        <a class="btn btn--secondary" href="#cennik">
+          <span>Pozrieť cenník</span>
+          <Icon name="arrow-down" size={18} />
+        </a>
+      </div>
+    </div>
+
+    <div class="about__media">
+      <figure class="img-frame about__photo about__photo--main">
+        <Picture
+          src={entrance.src}
+          alt={entrance.alt}
+          formats={['avif', 'webp']}
+          widths={[480, 800, 1200]}
+          width={1200}
+          sizes="(min-width: 1200px) 500px, (min-width: 900px) 42vw, 85vw"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>{entrance.caption}</figcaption>
+      </figure>
+      <figure class="img-frame about__photo about__photo--inset">
+        <Picture
+          src={hallway.src}
+          alt={hallway.alt}
+          formats={['avif', 'webp']}
+          widths={[320, 480, 720]}
+          width={720}
+          sizes="(min-width: 1200px) 230px, (min-width: 900px) 19vw, 40vw"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>{hallway.caption}</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__layout {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .about__text p {
+    max-width: 40rem;
+  }
+
+  .about__list {
+    margin-top: 1.75rem;
+    max-width: 34rem;
+  }
+
+  .about__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  /* Veľká fotografia vstupu a menšia fotografia chodby cez jej ľavý dolný roh */
+  .about__media {
+    position: relative;
+    padding-bottom: 18%;
+  }
+
+  .about__photo {
+    margin: 0;
+  }
+
+  .about__photo--main {
+    width: 84%;
+    margin-left: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .about__photo--inset {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40%;
+    aspect-ratio: 3 / 4;
+    border: 6px solid var(--color-bg);
+    border-radius: calc(var(--radius) + 6px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .about__photo figcaption {
+    position: absolute;
+    left: 0.75rem;
+    bottom: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    background: rgba(27, 27, 25, 0.72);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Popis veľkej fotografie vpravo, aby ho neprekrývala menšia fotografia */
+  .about__photo--main figcaption {
+    left: auto;
+    right: 0.75rem;
+  }
+
+  @media (min-width: 900px) {
+    .about__layout {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 4rem;
+      align-items: center;
+    }
+
+  }
+</style>

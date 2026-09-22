@@ -1,0 +1,470 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+import { photos, categories, countByCategory } from '../data/photos';
+
+// Väčšia verzia pre zväčšený náhľad (lightbox)
+const items = await Promise.all(
+  photos.map(async (item) => ({
+    ...item,
+    full: await getImage({ src: item.src, width: 1600, format: 'webp', quality: 82 }),
+  })),
+);
+---
+
+<section class="section gallery" id="fotogaleria" aria-labelledby="fotogaleria-nadpis">
+  <div class="container">
+    <SectionHead
+      id="fotogaleria-nadpis"
+      eyebrow="Fotogaléria"
+      title="Pozrite si, ako to u nás vyzerá"
+      lead="Všetky fotografie sú z nášho ubytovania na Polianky 15. Kliknutím na fotografiu ju zväčšíte."
+    />
+
+    <div class="gallery__filters" role="group" aria-label="Filtrovať fotografie podľa kategórie">
+      <button type="button" class="gallery__filter is-active" data-filter="all" aria-pressed="true">
+        Všetky <span class="gallery__count">{photos.length}</span>
+      </button>
+      {
+        categories.map((category) => (
+          <button type="button" class="gallery__filter" data-filter={category.id} aria-pressed="false">
+            {category.label} <span class="gallery__count">{countByCategory(category.id)}</span>
+          </button>
+        ))
+      }
+    </div>
+    <p class="visually-hidden" id="gallery-status" aria-live="polite"></p>
+
+    <ul class="gallery__grid" id="galeria-zoznam">
+      {
+        items.map((item, index) => (
+          <li
+            class="gallery__item"
+            data-category={item.category}
+            style={`--a: ${(item.src.width / item.src.height).toFixed(4)}`}
+          >
+            <button
+              type="button"
+              class="gallery__thumb"
+              data-index={index}
+              data-full={item.full.src}
+              data-alt={item.alt}
+              data-caption={item.caption}
+              aria-label={`Zväčšiť fotografiu: ${item.caption}`}
+            >
+              <Picture
+                src={item.src}
+                alt={item.alt}
+                formats={['avif', 'webp']}
+                widths={[400, 640, 900]}
+                width={900}
+                sizes={
+                  item.orientation === 'landscape'
+                    ? '(min-width: 1200px) 520px, (min-width: 640px) 45vw, 100vw'
+                    : '(min-width: 1200px) 300px, (min-width: 640px) 28vw, 50vw'
+                }
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="gallery__zoom" aria-hidden="true">
+                <Icon name="zoom-in" size={18} />
+              </span>
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Zväčšená fotografia">
+    <div class="lightbox__bar">
+      <span class="lightbox__counter" id="lightbox-counter" aria-live="polite"></span>
+      <button type="button" class="lightbox__btn lightbox__close" aria-label="Zavrieť náhľad">
+        <Icon name="x" size={22} />
+      </button>
+    </div>
+    <figure class="lightbox__figure">
+      <img id="lightbox-img" class="lightbox__img" alt="" decoding="async" />
+      <figcaption class="lightbox__caption" id="lightbox-caption"></figcaption>
+    </figure>
+    <button type="button" class="lightbox__btn lightbox__nav lightbox__prev" aria-label="Predchádzajúca fotografia">
+      <Icon name="chevron-left" size={26} />
+    </button>
+    <button type="button" class="lightbox__btn lightbox__nav lightbox__next" aria-label="Ďalšia fotografia">
+      <Icon name="chevron-right" size={26} />
+    </button>
+  </dialog>
+</section>
+
+<style>
+  .gallery__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .gallery__filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 40px;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    background: var(--color-surface);
+    font-weight: 700;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .gallery__filter:hover {
+    background: var(--color-surface-2);
+  }
+
+  .gallery__filter.is-active {
+    background: var(--color-text);
+    border-color: var(--color-text);
+    color: #fff;
+  }
+
+  .gallery__count {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.05rem 0.45rem;
+    border-radius: 999px;
+    background: var(--color-surface-2);
+    color: var(--color-text-muted);
+  }
+
+  .gallery__filter.is-active .gallery__count {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+  }
+
+  /*
+   * Zarovnané riadky: každá fotografia rastie úmerne svojmu pomeru strán (--a),
+   * takže všetky fotografie v riadku majú rovnakú výšku a nič sa neoreže.
+   * Poradie zostáva po riadkoch zľava doprava.
+   */
+  .gallery__grid {
+    --row-h: 170px;
+    --gap: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+  }
+
+  /* Posledný neúplný riadok sa nenaťahuje do šírky */
+  .gallery__grid::after {
+    content: '';
+    flex-grow: 1000000;
+  }
+
+  .gallery__item {
+    flex-grow: calc(var(--a) * 100);
+    flex-shrink: 1;
+    flex-basis: calc(var(--a) * var(--row-h));
+    aspect-ratio: var(--a);
+    min-width: 0;
+  }
+
+  .gallery__thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--color-surface-3);
+    cursor: zoom-in;
+  }
+
+  .gallery__thumb :global(picture),
+  .gallery__thumb :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .gallery__thumb :global(img) {
+    transition: transform 0.35s ease;
+  }
+
+  .gallery__thumb:hover :global(img) {
+    transform: scale(1.03);
+  }
+
+  .gallery__zoom {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-text);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .gallery__thumb:hover .gallery__zoom,
+  .gallery__thumb:focus-visible .gallery__zoom {
+    opacity: 1;
+  }
+
+  @media (min-width: 640px) {
+    .gallery__grid {
+      --row-h: 230px;
+      --gap: 0.9rem;
+    }
+
+    .gallery__thumb {
+      border-radius: var(--radius);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .gallery__grid {
+      --row-h: 290px;
+      --gap: 1rem;
+    }
+  }
+
+  /* Lightbox ------------------------------------------------------------- */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(12, 13, 15, 0.96);
+    color: #fff;
+  }
+
+  .lightbox::backdrop {
+    background: rgba(12, 13, 15, 0.9);
+  }
+
+  .lightbox__bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem var(--gutter);
+  }
+
+  .lightbox__counter {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .lightbox__btn {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .lightbox__btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  .lightbox__btn:focus-visible {
+    outline-color: #fff;
+  }
+
+  .lightbox__figure {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 4.5rem var(--gutter) 4.5rem;
+  }
+
+  .lightbox__img {
+    max-width: 100%;
+    max-height: calc(100dvh - 10rem);
+    width: auto;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    background: #1a1b1e;
+  }
+
+  .lightbox__caption {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    text-align: center;
+  }
+
+  .lightbox__nav {
+    position: absolute;
+    top: auto;
+    bottom: 0.75rem;
+    z-index: 2;
+  }
+
+  .lightbox__prev {
+    left: var(--gutter);
+  }
+
+  .lightbox__next {
+    right: var(--gutter);
+  }
+
+  @media (min-width: 900px) {
+    .lightbox__figure {
+      padding-inline: 6rem;
+    }
+
+    .lightbox__nav {
+      top: 50%;
+      bottom: auto;
+      transform: translateY(-50%);
+      width: 56px;
+      height: 56px;
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement | null;
+  const grid = document.getElementById('galeria-zoznam');
+  const status = document.getElementById('gallery-status');
+
+  if (dialog && grid) {
+    const image = dialog.querySelector<HTMLImageElement>('#lightbox-img')!;
+    const caption = dialog.querySelector<HTMLElement>('#lightbox-caption')!;
+    const counter = dialog.querySelector<HTMLElement>('#lightbox-counter')!;
+    const thumbs = Array.from(grid.querySelectorAll<HTMLButtonElement>('.gallery__thumb'));
+    const items = Array.from(grid.querySelectorAll<HTMLLIElement>('.gallery__item'));
+
+    let visible: HTMLButtonElement[] = thumbs;
+    let index = 0;
+    let opener: HTMLElement | null = null;
+
+    const refreshVisible = () => {
+      visible = thumbs.filter((thumb) => !(thumb.closest('.gallery__item') as HTMLElement).hidden);
+    };
+
+    const preload = (thumb?: HTMLButtonElement) => {
+      if (!thumb?.dataset.full) return;
+      const img = new Image();
+      img.src = thumb.dataset.full;
+    };
+
+    const show = (next: number) => {
+      refreshVisible();
+      if (!visible.length) return;
+      index = (next + visible.length) % visible.length;
+      const thumb = visible[index]!;
+      image.src = thumb.dataset.full || '';
+      image.alt = thumb.dataset.alt || '';
+      caption.textContent = thumb.dataset.caption || thumb.dataset.alt || '';
+      counter.textContent = `${index + 1} / ${visible.length}`;
+      preload(visible[(index + 1) % visible.length]);
+      preload(visible[(index - 1 + visible.length) % visible.length]);
+    };
+
+    const open = (thumb: HTMLButtonElement) => {
+      refreshVisible();
+      opener = thumb;
+      show(visible.indexOf(thumb));
+      if (!dialog.open) dialog.showModal();
+      dialog.querySelector<HTMLButtonElement>('.lightbox__close')?.focus();
+    };
+
+    thumbs.forEach((thumb) => thumb.addEventListener('click', () => open(thumb)));
+
+    dialog.querySelector('.lightbox__close')?.addEventListener('click', () => dialog.close());
+    dialog.querySelector('.lightbox__prev')?.addEventListener('click', () => show(index - 1));
+    dialog.querySelector('.lightbox__next')?.addEventListener('click', () => show(index + 1));
+
+    // Kliknutie mimo fotografie zatvorí náhľad
+    dialog.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (target === dialog || target.classList.contains('lightbox__figure')) dialog.close();
+    });
+
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        show(index + 1);
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        show(index - 1);
+      }
+    });
+
+    dialog.addEventListener('close', () => {
+      image.removeAttribute('src');
+      opener?.focus();
+    });
+
+    // Potiahnutie prstom na dotykových zariadeniach
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+    dialog.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'mouse') return;
+      startX = event.clientX;
+      startY = event.clientY;
+      tracking = true;
+    });
+    dialog.addEventListener('pointerup', (event) => {
+      if (!tracking) return;
+      tracking = false;
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(index + (dx < 0 ? 1 : -1));
+    });
+
+    // Filtrovanie podľa kategórie
+    const filters = Array.from(document.querySelectorAll<HTMLButtonElement>('.gallery__filter'));
+    filters.forEach((filter) => {
+      filter.addEventListener('click', () => {
+        const category = filter.dataset.filter;
+        filters.forEach((other) => {
+          const active = other === filter;
+          other.classList.toggle('is-active', active);
+          other.setAttribute('aria-pressed', String(active));
+        });
+        let shown = 0;
+        items.forEach((item) => {
+          const match = category === 'all' || item.dataset.category === category;
+          item.hidden = !match;
+          if (match) shown += 1;
+        });
+        if (status) status.textContent = `Zobrazené fotografie: ${shown}`;
+      });
+    });
+  }
+</script>

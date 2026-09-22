@@ -1,0 +1,32 @@
+---
+/**
+ * Značka Fér Bývanie – zjednodušená silueta budovy so svetlou a tmavšou fasádou,
+ * inšpirovaná skutočnou budovou na Polianky 15.
+ */
+interface Props {
+  size?: number;
+  class?: string;
+}
+const { size = 36, class: className, ...rest } = Astro.props;
+---
+
+<svg
+  {...rest}
+  class={className}
+  width={size}
+  height={size}
+  viewBox="0 0 40 40"
+  aria-hidden="true"
+  focusable="false"
+>
+  <rect width="40" height="40" rx="10" fill="var(--color-accent, #1f6b4e)"></rect>
+  <path d="M10 31V12.5a1.5 1.5 0 0 1 1.5-1.5H23a1.5 1.5 0 0 1 1.5 1.5V31Z" fill="#ffffff"></path>
+  <path d="M24.5 31V13.2l5.5-2.6V31Z" fill="#bfe0cf"></path>
+  <g fill="var(--color-accent, #1f6b4e)">
+    <rect x="13.5" y="15" width="3" height="3.2" rx="0.5"></rect>
+    <rect x="18" y="15" width="3" height="3.2" rx="0.5"></rect>
+    <rect x="13.5" y="20.5" width="3" height="3.2" rx="0.5"></rect>
+    <rect x="18" y="20.5" width="3" height="3.2" rx="0.5"></rect>
+    <rect x="15.5" y="26" width="3.5" height="5" rx="0.5"></rect>
+  </g>
+</svg>

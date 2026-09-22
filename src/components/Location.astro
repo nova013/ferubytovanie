@@ -1,0 +1,236 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+import { site } from '../data/site';
+import { photo } from '../data/photos';
+
+const exterior = [photo('main-building-1'), photo('main-building-2')];
+---
+
+<section class="section section--alt location" id="lokalita" aria-labelledby="lokalita-nadpis">
+  <div class="container">
+    <SectionHead
+      id="lokalita-nadpis"
+      eyebrow="Lokalita"
+      title="Nájdete nás v Dúbravke"
+      lead="Ubytovanie sa nachádza na ulici Polianky v bratislavskej mestskej časti Dúbravka."
+    />
+
+    <div class="location__layout">
+      <div class="location__card">
+        <p class="eyebrow">Adresa</p>
+        <address class="location__address">
+          <strong>{site.name}</strong>
+          <span>{site.address.street}</span>
+          <span>{site.address.postalCode} {site.address.city} – {site.address.district}</span>
+        </address>
+
+        <div class="location__actions">
+          <a
+            class="btn btn--primary"
+            href={site.maps.directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="navigation" size={18} />
+            <span>Zobraziť trasu</span>
+          </a>
+          <a
+            class="btn btn--secondary"
+            href={site.maps.placeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="external-link" size={18} />
+            <span>Otvoriť v Google Maps</span>
+          </a>
+        </div>
+
+        <ul class="location__notes">
+          <li>
+            <Icon name="parking" size={20} />
+            <span>Parkovanie priamo pri budove je v cene ubytovania.</span>
+          </li>
+          <li>
+            <Icon name="phone" size={20} />
+            <span>
+              Ak nás nemôžete nájsť, zavolajte na
+              <a href={site.phoneHref}>{site.phoneDisplay}</a>.
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="location__map">
+        <iframe
+          src={site.maps.embedUrl}
+          title="Mapa – Fér Bývanie, Polianky 15, Bratislava – Dúbravka"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade"
+          width="800"
+          height="600"
+        ></iframe>
+      </div>
+    </div>
+
+    <div class="location__exterior">
+      <h3>Takto vyzerá budova zvonku</h3>
+      <div class="location__photos">
+        {
+          exterior.map((item) => (
+            <figure class="img-frame location__photo">
+              <Picture
+                src={item.src}
+                alt={item.alt}
+                formats={['avif', 'webp']}
+                widths={[480, 800, 1200]}
+                width={1200}
+                sizes="(min-width: 1100px) 590px, (min-width: 700px) 48vw, 100vw"
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption>{item.caption}</figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .location__layout {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .location__card {
+    display: grid;
+    align-content: start;
+    gap: 1.25rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+  }
+
+  .location__card .eyebrow {
+    margin-bottom: 0;
+  }
+
+  .location__address {
+    display: grid;
+    gap: 0.1rem;
+    font-style: normal;
+    font-size: 1.15rem;
+    line-height: 1.4;
+  }
+
+  .location__address strong {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .location__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .location__notes {
+    display: grid;
+    gap: 0.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .location__notes li {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+
+  .location__notes svg {
+    flex: none;
+    margin-top: 0.15rem;
+    color: var(--color-accent-text);
+  }
+
+  .location__notes a {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .location__map {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+  }
+
+  .location__map iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .location__exterior {
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .location__exterior h3 {
+    margin-bottom: 1rem;
+  }
+
+  .location__photos {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .location__photo {
+    margin: 0;
+    aspect-ratio: 4 / 3;
+  }
+
+  .location__photo figcaption {
+    position: absolute;
+    left: 0.75rem;
+    bottom: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    background: rgba(27, 27, 25, 0.72);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    backdrop-filter: blur(4px);
+  }
+
+  @media (min-width: 700px) {
+    .location__photos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.1rem;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .location__layout {
+      grid-template-columns: minmax(300px, 0.8fr) minmax(0, 1.2fr);
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+
+    .location__map {
+      aspect-ratio: auto;
+      min-height: 420px;
+    }
+  }
+</style>

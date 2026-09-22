@@ -1,0 +1,333 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { site, nav } from '../data/site';
+---
+
+<header class="site-header" id="top">
+  <div class="container site-header__inner">
+    <a href="#top" class="brand" aria-label={`${site.name} – na začiatok stránky`}>
+      <Logo class="brand__mark" size={38} />
+      <span class="brand__text">
+        <span class="brand__name">{site.name}</span>
+        <span class="brand__sub">{site.tagline}</span>
+      </span>
+    </a>
+
+    <nav class="site-nav" id="hlavne-menu" aria-label="Hlavná navigácia">
+      <ul class="site-nav__list">
+        {
+          nav.map((item) => (
+            <li>
+              <a class="site-nav__link" href={item.href}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="btn btn--primary site-nav__call" href={site.phoneHref} aria-label={`Zavolať ${site.phoneDisplay}`}>
+        <Icon name="phone" size={18} />
+        <span>{site.phoneDisplay}</span>
+      </a>
+    </nav>
+
+    <div class="site-header__actions">
+      <a
+        class="btn btn--primary btn--icon site-header__call"
+        href={site.phoneHref}
+        aria-label={`Zavolať ${site.phoneDisplay}`}
+      >
+        <Icon name="phone" size={20} />
+      </a>
+      <button
+        type="button"
+        class="nav-toggle"
+        id="nav-toggle"
+        aria-expanded="false"
+        aria-controls="hlavne-menu"
+        aria-label="Otvoriť menu"
+      >
+        <Icon name="menu" size={24} class="nav-toggle__open" />
+        <Icon name="x" size={24} class="nav-toggle__close" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(246, 245, 241, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .site-header.is-scrolled {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: var(--header-h);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--color-text);
+    text-decoration: none;
+    min-width: 0;
+  }
+
+  .brand__mark {
+    flex: none;
+  }
+
+  .brand__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+    min-width: 0;
+  }
+
+  .brand__name {
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+  }
+
+  .brand__sub {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 359.98px) {
+    .brand__sub {
+      display: none;
+    }
+  }
+
+  /* Navigácia – desktop */
+  .site-nav {
+    display: none;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .site-nav__list {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .site-nav__link {
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .site-nav__link:hover {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+  }
+
+  .site-nav__link[aria-current='true'] {
+    color: var(--color-accent-text);
+    background: var(--color-accent-soft);
+  }
+
+  .site-nav__call {
+    min-height: 44px;
+    padding-block: 0.65rem;
+  }
+
+  /* Mobilné ovládanie */
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 10px;
+    background: var(--color-surface);
+    cursor: pointer;
+  }
+
+  .nav-toggle__close {
+    display: none;
+  }
+
+  .site-header.is-open .nav-toggle__open {
+    display: none;
+  }
+
+  .site-header.is-open .nav-toggle__close {
+    display: block;
+  }
+
+  @media (max-width: 899.98px) {
+    .site-nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      display: grid;
+      gap: 0.25rem;
+      padding: 0.75rem var(--gutter) 1.25rem;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-8px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
+    }
+
+    .site-header.is-open .site-nav {
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s;
+    }
+
+    .site-nav__list {
+      display: grid;
+      gap: 0.15rem;
+    }
+
+    .site-nav__link {
+      display: block;
+      padding: 0.85rem 0.75rem;
+      font-size: 1.05rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .site-nav__call {
+      margin-top: 0.5rem;
+      min-height: 52px;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .site-nav {
+      display: flex;
+    }
+
+    .site-header__actions {
+      display: none;
+    }
+
+    .brand__name {
+      font-size: 1.25rem;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .site-nav__list {
+      gap: 0.5rem;
+    }
+
+    .site-nav__link {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('hlavne-menu');
+
+  if (header && toggle && menu) {
+    const setOpen = (open: boolean) => {
+      header.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Zavrieť menu' : 'Otvoriť menu');
+    };
+
+    toggle.addEventListener('click', () => setOpen(!header.classList.contains('is-open')));
+
+    menu.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && header.classList.contains('is-open')) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (header.classList.contains('is-open') && !header.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    });
+
+    const desktop = window.matchMedia('(min-width: 900px)');
+    desktop.addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Zvýraznenie aktívnej sekcie v navigácii
+    const links = Array.from(menu.querySelectorAll<HTMLAnchorElement>('.site-nav__link'));
+    const sections = links
+      .map((link) => document.querySelector<HTMLElement>(link.getAttribute('href') || ''))
+      .filter((section): section is HTMLElement => section !== null);
+
+    if ('IntersectionObserver' in window && sections.length) {
+      const visible = new Map<Element, number>();
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) visible.set(entry.target, entry.intersectionRatio);
+          let best: Element | null = null;
+          let bestRatio = 0;
+          for (const [element, ratio] of visible) {
+            if (ratio > bestRatio) {
+              best = element;
+              bestRatio = ratio;
+            }
+          }
+          for (const link of links) {
+            const active = best !== null && link.getAttribute('href') === `#${best.id}`;
+            if (active) link.setAttribute('aria-current', 'true');
+            else link.removeAttribute('aria-current');
+          }
+        },
+        { rootMargin: '-35% 0px -55% 0px', threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] },
+      );
+      sections.forEach((section) => observer.observe(section));
+    }
+  }
+</script>
