@@ -26,7 +26,8 @@ const ogImage = await getImage({
   format: 'jpg',
   quality: 82,
 });
-const ogImageUrl = Astro.site ? new URL(ogImage.src, Astro.site).toString() : ogImage.src;
+// Open Graph vyžaduje absolútnu adresu – bez nastavenej domény (SITE_URL) sa značka vynechá.
+const ogImageUrl = Astro.site ? new URL(ogImage.src, Astro.site).toString() : undefined;
 
 // Štruktúrované dáta – iba overené údaje o ubytovaní
 const structuredData = {
@@ -37,7 +38,7 @@ const structuredData = {
   url: canonical,
   telephone: site.phoneE164,
   email: site.email,
-  image: [ogImageUrl],
+  image: ogImageUrl ? [ogImageUrl] : undefined,
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Polianky 15',
@@ -81,14 +82,20 @@ const structuredData = {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     {canonical && <meta property="og:url" content={canonical} />}
-    <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={site.seo.ogImageAlt} />
+    {
+      ogImageUrl && (
+        <>
+          <meta property="og:image" content={ogImageUrl} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content={site.seo.ogImageAlt} />
+          <meta name="twitter:image" content={ogImageUrl} />
+        </>
+      )
+    }
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImageUrl} />
 
     <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
   </head>

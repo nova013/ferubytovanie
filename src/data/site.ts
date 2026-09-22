@@ -53,11 +53,16 @@ export const site = {
     bathrooms: 3,
   },
 
+  /** Areál a okolie – údaje od majiteľa. */
+  area: {
+    kauflandDistance: `500${NBSP}m`,
+  },
+
   seo: {
-    title: 'Fér Bývanie | Ubytovanie Bratislava – Dúbravka od 10 € / noc',
+    title: 'Fér Bývanie | Ubytovanie Bratislava – Dúbravka za 10 € / noc',
     description:
-      'Cenovo dostupné ubytovanie v Bratislave – Dúbravke na Polianky 15. 50 izieb s 2 – 3 lôžkami, spoločné kuchyne a kúpeľne, Wi-Fi, práčky a parkovanie v cene. Už od 10 € za noc a lôžko. Zavolajte: +421 948 717 950.',
-    ogImageAlt: 'Budova ubytovania Fér Bývanie na Polianky 15 v Bratislave – Dúbravke',
+      'Cenovo dostupné ubytovanie v Bratislave – Dúbravke na ulici Polianky 15. 50 izieb s 2 – 3 lôžkami, spoločné kuchyne a kúpeľne, Wi-Fi, práčky a parkovanie v cene. 10 € za noc a lôžko. Kaufland 500 m. Zavolajte: +421 948 717 950.',
+    ogImageAlt: 'Budova ubytovania Fér Bývanie na ulici Polianky 15 v Bratislave – Dúbravke',
   },
 } as const;
 

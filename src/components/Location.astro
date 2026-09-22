@@ -6,6 +6,28 @@ import { site } from '../data/site';
 import { photo } from '../data/photos';
 
 const exterior = [photo('main-building-1'), photo('main-building-2')];
+
+// Areál a okolie – iba údaje od majiteľa
+const area = [
+  {
+    icon: 'shopping-cart',
+    title: 'Kaufland',
+    value: site.area.kauflandDistance,
+    text: 'Supermarket v blízkosti ubytovania.',
+  },
+  {
+    icon: 'car',
+    title: 'Autoumyváreň',
+    value: 'v areáli',
+    text: 'Nachádza sa v rovnakom areáli ako ubytovanie.',
+  },
+  {
+    icon: 'wrench',
+    title: 'Pneuservis',
+    value: 'v areáli',
+    text: 'Nachádza sa v rovnakom areáli ako ubytovanie.',
+  },
+] as const;
 ---
 
 <section class="section section--alt location" id="lokalita" aria-labelledby="lokalita-nadpis">
@@ -14,7 +36,7 @@ const exterior = [photo('main-building-1'), photo('main-building-2')];
       id="lokalita-nadpis"
       eyebrow="Lokalita"
       title="Nájdete nás v Dúbravke"
-      lead="Ubytovanie sa nachádza na ulici Polianky v bratislavskej mestskej časti Dúbravka."
+      lead={`Ubytovanie sa nachádza na ulici Polianky v bratislavskej mestskej časti Dúbravka. Kaufland je len ${site.area.kauflandDistance} od nás.`}
     />
 
     <div class="location__layout">
@@ -74,6 +96,28 @@ const exterior = [photo('main-building-1'), photo('main-building-2')];
         ></iframe>
       </div>
     </div>
+
+    <section class="area" aria-labelledby="areal-nadpis">
+      <h3 id="areal-nadpis">V areáli a v okolí</h3>
+      <ul class="area__list">
+        {
+          area.map((item) => (
+            <li class="area__item">
+              <span class="area__icon">
+                <Icon name={item.icon} size={22} />
+              </span>
+              <div>
+                <p class="area__title">
+                  <strong>{item.title}</strong>
+                  <span class="area__value">{item.value}</span>
+                </p>
+                <p class="area__text">{item.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
 
     <div class="location__exterior">
       <h3>Takto vyzerá budova zvonku</h3>
@@ -181,6 +225,76 @@ const exterior = [photo('main-building-1'), photo('main-building-2')];
     width: 100%;
     height: 100%;
     border: 0;
+  }
+
+  /* Areál a okolie */
+  .area {
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .area h3 {
+    margin-bottom: 1rem;
+  }
+
+  .area__list {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .area__item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+  }
+
+  .area__icon {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 12px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent-text);
+  }
+
+  .area__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem 0.5rem;
+    margin: 0 0 0.1rem;
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+
+  .area__title strong {
+    font-weight: 800;
+  }
+
+  .area__value {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--color-accent-text);
+    white-space: nowrap;
+  }
+
+  .area__text {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  @media (min-width: 760px) {
+    .area__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.1rem;
+    }
   }
 
   .location__exterior {

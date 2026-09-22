@@ -18,8 +18,24 @@ npm run preview    # náhľad produkčného buildu
 Nasadenie: nahrajte obsah priečinka `dist/` na ľubovoľný statický hosting
 (Netlify, Vercel, Cloudflare Pages, klasický webhosting cez FTP…).
 
-**Pred nasadením** nastavte skutočnú doménu v `astro.config.mjs` (`site`) – používa sa
-pre canonical URL, Open Graph obrázok a štruktúrované dáta.
+**Pred nasadením** zostavte web so skutočnou doménou – používa sa pre canonical URL,
+Open Graph obrázok (náhľad pri zdieľaní) a štruktúrované dáta:
+
+```powershell
+$env:SITE_URL = "https://www.vasadomena.sk"; npm run build
+```
+
+Bez `SITE_URL` web funguje normálne, len sa nevygenerujú značky canonical, `og:url` a `og:image`.
+
+### Poznámka pre Windows (Smart App Control / Application Control)
+
+Na tomto počítači politika Windows blokuje natívny modul kompilátora Astro
+(`astro.win32-x64-msvc.node`). Projekt preto obsahuje WebAssembly verziu kompilátora
+v priečinku `vendor/astro-compiler-wasm32-wasi` (kópia balíka
+`@astrojs/compiler-binding-wasm32-wasi@0.4.1` bez obmedzenia `"cpu": "wasm32"`),
+ktorú Astro použije automaticky, keď sa natívny modul nedá načítať. Hláška
+`ExperimentalWarning: WASI is an experimental feature` je neškodná. Pri aktualizácii
+Astro aktualizujte aj túto kópiu na verziu zodpovedajúcu `@astrojs/compiler-binding`.
 
 ## Fotografie
 

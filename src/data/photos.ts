@@ -46,7 +46,7 @@ const inventory: PhotoInput[] = [
   {
     file: 'main-building',
     category: 'exterier',
-    alt: 'Budova ubytovania Fér Bývanie na Polianky 15 v Bratislave – Dúbravke s parkoviskom pred vchodom',
+    alt: 'Budova ubytovania Fér Bývanie na ulici Polianky 15 v Bratislave – Dúbravke s parkoviskom pred vchodom',
     caption: 'Budova ubytovania a parkovisko pred vchodom',
   },
   {
