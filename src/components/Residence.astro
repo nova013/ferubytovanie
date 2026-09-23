@@ -1,0 +1,67 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+
+<section class="section section--alt residence" id="bydlisko" aria-labelledby="bydlisko-nadpis">
+  <div class="container">
+    <div class="residence__card">
+      <span class="residence__icon">
+        <Icon name="building" size={28} />
+      </span>
+      <div class="residence__text">
+        <h2 id="bydlisko-nadpis">Potrebujete prechodné bydlisko alebo sídlo firmy?</h2>
+        <p>Radi vám vyhovieme.</p>
+      </div>
+      <a class="btn btn--primary btn--lg residence__cta" href={site.phoneHref}>
+        <Icon name="phone" size={20} />
+        <span>Zavolať {site.phoneDisplay}</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .residence {
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .residence__card {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: var(--radius-lg);
+    background: var(--color-accent-soft);
+    border: 1px solid rgba(31, 107, 78, 0.18);
+  }
+
+  .residence__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 14px;
+    background: var(--color-surface);
+    color: var(--color-accent-text);
+  }
+
+  .residence__text h2 {
+    font-size: clamp(1.4rem, 1.1rem + 1.1vw, 1.9rem);
+  }
+
+  .residence__text p {
+    margin-top: 0.4rem;
+    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+    font-weight: 600;
+    color: var(--color-accent-text);
+  }
+
+  @media (min-width: 900px) {
+    .residence__card {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 1.75rem;
+    }
+  }
+</style>

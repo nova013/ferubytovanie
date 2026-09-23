@@ -85,6 +85,7 @@ const facts = {
   'pneuservis v areáli': /pneuservis/i,
   'text o službách v areáli': /Počas pobytu môžete využiť služby priamo v našom areáli/,
   'záverečná veta o službách': /Pohodlné ubytovanie, praktické služby a všetko na jednom mieste\./,
+  'prechodné bydlisko / sídlo firmy': /Potrebujete prechodné bydlisko alebo sídlo firmy\? Radi vám vyhovieme\./,
 };
 const missingFacts = Object.entries(facts).filter(([, re]) => !re.test(all)).map(([k]) => k);
 check('Všetky požadované fakty sú na stránke', missingFacts.length === 0, missingFacts.join(', '));
