@@ -81,7 +81,10 @@ const facts = {
   'kamerový systém': /kamerovým systémom/,
   'Kaufland 500 m': /Kaufland[^.]{0,40}500 m/,
   'autoumyváreň v areáli': /autoumyváreň/i,
+  'autoservis v areáli': /autoservis/i,
   'pneuservis v areáli': /pneuservis/i,
+  'text o službách v areáli': /Počas pobytu môžete využiť služby priamo v našom areáli/,
+  'záverečná veta o službách': /Pohodlné ubytovanie, praktické služby a všetko na jednom mieste\./,
 };
 const missingFacts = Object.entries(facts).filter(([, re]) => !re.test(all)).map(([k]) => k);
 check('Všetky požadované fakty sú na stránke', missingFacts.length === 0, missingFacts.join(', '));
@@ -102,10 +105,22 @@ check('<title>', /<title>Fér Bývanie \| Ubytovanie Bratislava – Dúbravka za
 check('meta description', /<meta name="description" content="[^"]{120,}"/.test(html));
 check('Open Graph title/description', /og:title/.test(html) && /og:description/.test(html));
 check('JSON-LD LodgingBusiness', /"@type":"LodgingBusiness"/.test(html));
+
+// 6. Mapa – poloha podľa súradníc budovy (textová adresa v Google ukazuje zlú budovu)
+const COORDS = /48\.176901(?:,|%2C)17\.060359/;
+const iframeSrc = (html.match(/<iframe[^>]*src="([^"]+)"/) || [])[1] || '';
+const mapLinks = [...html.matchAll(/href="(https:\/\/www\.google\.com\/maps[^"]*)"/g)].map((m) => m[1]);
+check('Mapa ukazuje na súradnice budovy', COORDS.test(iframeSrc), iframeSrc.slice(0, 70));
+check(
+  'Všetky odkazy na Google Maps smerujú na súradnice',
+  mapLinks.length > 0 && mapLinks.every((l) => COORDS.test(l)),
+  `${mapLinks.length} odkazov`,
+);
+check('JSON-LD obsahuje súradnice', /"latitude":48\.176901,"longitude":17\.060359/.test(html));
 const h1 = (html.match(/<h1\b/g) || []).length;
 check('Práve jeden H1', h1 === 1, `${h1}`);
 
-// 6. Veľkosť
+// 7. Veľkosť
 const assets = path.join(DIST, '_astro');
 let total = 0;
 for (const f of await readdir(assets)) total += (await stat(path.join(assets, f))).size;

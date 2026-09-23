@@ -46,6 +46,12 @@ const structuredData = {
     postalCode: '841 01',
     addressCountry: 'SK',
   },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: site.geo.latitude,
+    longitude: site.geo.longitude,
+  },
+  hasMap: site.maps.placeUrl,
   numberOfRooms: site.facts.rooms,
   petsAllowed: false,
   priceRange: '10 € / noc / lôžko',

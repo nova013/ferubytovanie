@@ -10,6 +10,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import heicConvert from 'heic-convert';
+import { isExcluded } from './photo-config.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE_DIR = path.join(ROOT, 'Photos');
@@ -42,6 +43,10 @@ async function main() {
   for (const name of entries) {
     const src = path.join(SOURCE_DIR, name);
     if (!(await stat(src)).isFile()) continue;
+    if (isExcluded(name)) {
+      console.log(`Vynechávam (zámerne nepoužitá): ${name}`);
+      continue;
+    }
     const buffer = await decodeToBuffer(src);
     if (!buffer) {
       console.warn(`Preskakujem nepodporovaný súbor: ${name}`);

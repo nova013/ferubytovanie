@@ -9,6 +9,7 @@
 import { readdir, readFile, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isExcluded } from './photo-config.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE_DIR = path.join(ROOT, 'Photos');
@@ -24,9 +25,11 @@ const exists = (file) =>
     () => false,
   );
 
-const originals = (await readdir(SOURCE_DIR))
+const allOriginals = (await readdir(SOURCE_DIR))
   .filter((name) => IMAGE_EXT.has(path.extname(name).toLowerCase()))
   .sort();
+const excluded = allOriginals.filter(isExcluded);
+const originals = allOriginals.filter((name) => !isExcluded(name));
 
 const inventory = await readFile(INVENTORY, 'utf8');
 const distHtml = (await exists(DIST_HTML)) ? await readFile(DIST_HTML, 'utf8') : null;
@@ -56,6 +59,10 @@ for (const name of originals) {
 }
 
 console.table(rows);
+
+if (excluded.length) {
+  console.log(`Zámerne vynechané (scripts/photo-config.mjs): ${excluded.join(', ')}`);
+}
 
 if (!distHtml) {
   console.log('Upozornenie: dist/index.html neexistuje – použitie v builde nebolo overené. Spustite „npm run build“.');

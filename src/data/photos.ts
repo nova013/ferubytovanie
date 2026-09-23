@@ -162,7 +162,7 @@ const inventory: PhotoInput[] = [
   {
     file: 'hallway',
     category: 'spolocne',
-    alt: 'Chodba s dverami do izieb a hasiacim prístrojom',
+    alt: 'Chodba s dverami do izieb, rohožami pred dverami a hasiacim prístrojom',
     caption: 'Chodba k izbám',
   },
   {

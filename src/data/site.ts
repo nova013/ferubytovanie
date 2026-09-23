@@ -26,16 +26,23 @@ export const site = {
   /** Jednoriadková adresa na zobrazenie. */
   addressLine: `Polianky 15, 841${NBSP}01 Bratislava – Dúbravka`,
 
+  /**
+   * Presná poloha budovy (od majiteľa, Google Maps „Polianky 3091“).
+   * Google podľa textovej adresy „Polianky 15“ ukazuje nesprávnu budovu,
+   * preto všetky mapové odkazy používajú súradnice.
+   */
+  geo: {
+    latitude: 48.176901,
+    longitude: 17.060359,
+  },
+
   maps: {
-    /** Trasa v Google Maps (otvorí navigáciu k adrese). */
-    directionsUrl:
-      'https://www.google.com/maps/dir/?api=1&destination=Polianky+15%2C+841+01+Bratislava',
+    /** Trasa v Google Maps (otvorí navigáciu k budove). */
+    directionsUrl: 'https://www.google.com/maps/dir/?api=1&destination=48.176901%2C17.060359',
     /** Miesto v Google Maps. */
-    placeUrl:
-      'https://www.google.com/maps/search/?api=1&query=Polianky+15%2C+841+01+Bratislava',
+    placeUrl: 'https://www.google.com/maps/search/?api=1&query=48.176901%2C17.060359',
     /** Vložená mapa (bez API kľúča). */
-    embedUrl:
-      'https://www.google.com/maps?q=Polianky+15%2C+841+01+Bratislava&z=16&hl=sk&output=embed',
+    embedUrl: 'https://www.google.com/maps?q=48.176901,17.060359&z=17&hl=sk&output=embed',
   },
 
   price: {
@@ -57,6 +64,13 @@ export const site = {
   area: {
     kauflandDistance: `500${NBSP}m`,
   },
+
+  /** Služby priamo v areáli – texty od majiteľa. */
+  services: [
+    { icon: 'droplets', title: 'Autoumyváreň', text: 'Doprajte svojmu autu čistotu.' },
+    { icon: 'wrench', title: 'Autoservis', text: 'Drobné opravy a servis.' },
+    { icon: 'tire', title: 'Pneuservis', text: 'Prezutie a starostlivosť o pneumatiky.' },
+  ],
 
   seo: {
     title: 'Fér Bývanie | Ubytovanie Bratislava – Dúbravka za 10 € / noc',
